@@ -166,6 +166,10 @@ function linWhenGivenSub(sub::Integer,w,s::RangeHolder{Integer},d::RangeHolder{D
   return rD
 end
 
+function linWhenGivenSub(sub::Array,w,s::RangeHolder{Integer},d::RangeHolder{Date})
+  return [linWhenGivenSub(val,w,s,d) for (ind,val) in enumerate(sub)]
+end
+
 function plotLinNN(w,s::RangeHolder{Integer},d::RangeHolder{Date},df)
   pD,pS,oD,oS=resultLinNN(w,s,d,df);
   xt=d.minimum:Dates.Day(200):d.maximum
@@ -178,6 +182,12 @@ function plotLinNN(w,s::RangeHolder{Integer},d::RangeHolder{Date},df,gS)
   gD=linWhenGivenSub(gS,w,s,d)
   plotLinNN(w,s,d,df)
   scatter!([gD,gD],[gS,gS], label="Given subs")
+end
+
+function plotLinNN(w,s::RangeHolder{Integer},d::RangeHolder{Date},df,gS::Array)
+  gD=[linWhenGivenSub(val,w,s,d) for (ind,val) in enumerate(gS)]
+  plotLinNN(w,s,d,df)
+  scatter!(gD,gS, label="Given subs")
 end
 
 #Exponential functions
@@ -249,6 +259,10 @@ function expWhenGivenSub(sub::Integer,w,s::RangeHolder{Integer},d::RangeHolder{D
   return rD
 end
 
+function expWhenGivenSub(sub::Array,w,s::RangeHolder{Integer},d::RangeHolder{Date})
+  return [expWhenGivenSub(val,w,s,d) for (ind,val) in enumerate(sub)]
+end
+
 function plotExpNN(w,s::RangeHolder{Integer},d::RangeHolder{Date},df)
   pD,pS,oD,oS=resultExpNN(w,s,d,df);
   xt=d.minimum:Dates.Day(200):d.maximum
@@ -261,6 +275,12 @@ function plotExpNN(w,s::RangeHolder{Integer},d::RangeHolder{Date},df,gS)
   gD=expWhenGivenSub(gS,w,s,d)
   plotExpNN(w,s,d,df)
   scatter!([gD,gD],[gS,gS], label="Given subs")
+end
+
+function plotExpNN(w,s::RangeHolder{Integer},d::RangeHolder{Date},df,gS::Array)
+  gD=[expWhenGivenSub(val,w,s,d) for (ind,val) in enumerate(gS)]
+  plotExpNN(w,s,d,df)
+  scatter!(gD,gS, label="Given subs")
 end
 
 #Quadratic functions
