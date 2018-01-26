@@ -110,7 +110,7 @@ function learnLinPars(iters,daf,lr,SR::RangeHolder{Integer},DR::RangeHolder{Date
   W=rand(2)
   inp,outp=createNNinput(daf,SR,DR)
   start_loss=loss_lin(W,inp[1],outp[1])
-  println("Start loss is $start_loss.")
+  println("Linear start loss is $start_loss.")
   setSize=size(inp,1)
   wSize=size(W,1)
   for k in 1:iters
@@ -160,9 +160,9 @@ function linWhenGivenSub(sub::Integer,w,s::RangeHolder{Integer},d::RangeHolder{D
     error("Given sub is out of range!")
   end
   nS=normSub(sub,s)
-  nD=(nS-W[2])/W[1]
+  nD=(nS-w[2])/w[1]
   rD=norm2realDate(nD,d)
-  println("Given $sub subscribers will be achieved on $rD.")
+  println("Given $sub subscribers based on linear approximation will be achieved on $rD.")
   return rD
 end
 
@@ -199,7 +199,7 @@ function learnExpPars(iters,daf,lr,SR::RangeHolder{Integer},DR::RangeHolder{Date
   W=rand(2)
   inp,outp=createNNinput(daf,SR,DR)
   start_loss=loss_exp(W,inp[1],outp[1])
-  println("Start loss is $start_loss.")
+  println("Exponential start loss is $start_loss.")
   setSize=size(inp,1)
   wSize=size(W,1)
   for k in 1:iters
@@ -249,13 +249,13 @@ function expWhenGivenSub(sub::Integer,w,s::RangeHolder{Integer},d::RangeHolder{D
     error("Given sub is out of range!")
   end
   nS=normSub(sub,s)
-  preV=(nS-W[2])/W[1]
+  preV=(nS-w[2])/w[1]
   if preV<0
     error("Argument of logarithmus naturalis is negative: $preV")
   end
   nD=log(preV)
   rD=norm2realDate(nD,d)
-  println("Given $sub subscribers will be achieved on $rD.")
+  println("Given $sub subscribers based on exponential approximation will be achieved on $rD.")
   return rD
 end
 
@@ -292,7 +292,7 @@ function learnQuadPars(iters,daf,lr,SR::RangeHolder{Integer},DR::RangeHolder{Dat
   W=rand(3)
   inp,outp=createNNinput(daf,SR,DR)
   start_loss=loss_quad(W,inp[1],outp[1])
-  println("Start loss is $start_loss.")
+  println("Quadratic start loss is $start_loss.")
   setSize=size(inp,1)
   wSize=size(W,1)
   for k in 1:iters
@@ -357,7 +357,7 @@ function quadWhenGivenSub(sub::Integer,w,s::RangeHolder{Integer},d::RangeHolder{
     for (ind,val) in enumerate(boolVal)
       if val
         rd=norm2realDate(realRts[ind],d)
-        println("Given $sub subscribers will be achieved on $rd.")
+        println("Given $sub subscribers based on quadratic approximation will be achieved on $rd.")
         return rd
       end
     end
