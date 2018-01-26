@@ -346,6 +346,10 @@ function quadWhenGivenSub(sub::Integer,w,s::RangeHolder{Integer},d::RangeHolder{
   end
 end
 
+function quadWhenGivenSub(sub::Array,w,s::RangeHolder{Integer},d::RangeHolder{Date})
+  return [quadWhenGivenSub(val,w,s,d) for (ind,val) in enumerate(sub)]
+end
+
 function plotQuadNN(w,s::RangeHolder{Integer},d::RangeHolder{Date},df)
   pD,pS,oD,oS=resultQuadNN(w,s,d,df);
   xt=d.minimum:Dates.Day(200):d.maximum
@@ -354,8 +358,14 @@ function plotQuadNN(w,s::RangeHolder{Integer},d::RangeHolder{Date},df)
   scatter!(oD,oS,label="Teaching set")
 end
 
-function plotQuadNN(w,s::RangeHolder{Integer},d::RangeHolder{Date},df,gS)
+function plotQuadNN(w,s::RangeHolder{Integer},d::RangeHolder{Date},df,gS::Real)
   gD=quadWhenGivenSub(gS,w,s,d)
   plotQuadNN(w,s,d,df)
   scatter!([gD,gD],[gS,gS], label="Given subs")
+end
+
+function plotQuadNN(w,s::RangeHolder{Integer},d::RangeHolder{Date},df,gS::Array)
+  gD=[quadWhenGivenSub(val,w,s,d) for (ind,val) in enumerate(gS)]
+  plotQuadNN(w,s,d,df)
+  scatter!(gD,gS, label="Given subs")
 end
