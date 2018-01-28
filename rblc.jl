@@ -106,7 +106,7 @@ Calculating the fitting parameters if linear function.
 - `DR::RangeHolder{Date}`: Date range.
 - `printNum::Integer`: how often to print the loss, default is 100
 """
-function learnLinPars(iters,daf,lr,SR::RangeHolder{Integer},DR::RangeHolder{Date};printNum=100)
+function learnLinPars(iters,daf,lr,SR::RangeHolder{Integer},DR::RangeHolder{Date};printNum=500)
   W=rand(2)
   inp,outp=createNNinput(daf,SR,DR)
   start_loss=loss_lin(W,inp[1],outp[1])
@@ -388,4 +388,35 @@ function plotQuadNN(w,s::RangeHolder{Integer},d::RangeHolder{Date},df,gS::Array)
   gD=[quadWhenGivenSub(val,w,s,d) for (ind,val) in enumerate(gS)]
   plotQuadNN(w,s,d,df)
   scatter!(gD,gS, label="Given subs")
+end
+
+function learnNNPars(tip,iters,daf,lr,SR::RangeHolder{Integer},DR::RangeHolder{Date};printNum=500)
+  if tip==:lin || tip==:exp
+    W=rand(2)
+  elseif tip==::quad
+    W=rand(3)
+  end
+
+  inp,outp=createNNinput(daf,SR,DR)
+  start_loss=loss_lin(W,inp[1],outp[1])
+  println("Linear start loss is $start_loss.")
+  setSize=size(inp,1)
+  wSize=size(W,1)
+  for k in 1:iters
+    for j in 1:setSize
+      dw=lossgrad_lin(W,inp[j],outp[j])
+      for i in 1:wSize
+        W[i]-=lr*dw[i]
+      end
+    end
+    if k%printNum==0
+      kthLoss=0
+      for i in 1:setSize
+        kthLoss+=loss_lin(W,inp[i],outp[i])
+      end
+      avgLoss=mean(kthLoss)
+      println("Average loss with linear approximation in $k-th iteration is: $avgLoss")
+    end
+  end
+  return W
 end
